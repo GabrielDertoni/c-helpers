@@ -1,0 +1,38 @@
+BIN=main
+
+CC=gcc
+CFLAGS=-Wall -Werror
+HDR=includes
+SRC=src
+OBJ=obj
+
+SRCS=$(wildcard $(SRC)/*.c)
+HDRS=$(wildcard $(HDR)/*.h)
+OBJS=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
+
+all: $(BIN)
+
+# Linking all .o
+$(BIN): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(BIN)
+
+# Runs binary
+run:
+	./$(BIN)
+
+# Compiling to .o
+$(OBJ)/%.o: $(SRC)/%.c $(OBJ)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(HDR)
+
+# Creates a new directory for all .o
+$(OBJ):
+	mkdir -p $(OBJ)
+
+# Cleaning.
+clean:
+	rm $(TESTS)
+	rm $(OBJ)/*
+	rmdir $(OBJ)
+	rm $(BIN)
+
+

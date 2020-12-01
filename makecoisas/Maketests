@@ -1,0 +1,12 @@
+
+TEST=tests
+TEST_BIN=bin/tests
+TESTFLAGS=-g -DDEBUG
+TEST_SRCS=$(wildcard $(TEST)/*.c)
+TESTS=$(patsubst $(TEST)/%.c, $(TEST_BIN)/%, $(TEST_SRCS))
+
+# UNIT testing
+$(TEST_BIN)/%_test: $(SRC)/%.c $(TEST)/%_test.c
+	$(CC) $(CFLAGS) $(TESTFLAGS) $^ -o $@ -I $(HDR)
+
+
