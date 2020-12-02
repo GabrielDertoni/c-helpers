@@ -67,6 +67,10 @@ bool test_llrb_successor() {
         val *= 2;
     }
 
+    val = 0;
+    // Cannot find elements not contained in the tree.
+    assert_eq(llrb_predecessor(tree, &val), NULL);
+
     llrb_delete(tree, do_nothing);
     return true;
 }
@@ -85,6 +89,10 @@ bool test_llrb_predecessor() {
         assert_neq(result, NULL);
         assert_eq(*result, val - 1);
     }
+
+    int tmp = 120;
+    // Cannot find elements not contained in the tree.
+    assert_eq(llrb_predecessor(tree, &tmp), NULL);
 
     llrb_delete(tree, do_nothing);
     return true;

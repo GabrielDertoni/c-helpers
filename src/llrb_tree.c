@@ -186,7 +186,7 @@ static node_t *_successor(node_t *node, void *element, comp_fn_t comp) {
     node_t *succ = NULL; // The parent node successor.
 
     int cmp;
-    while ((cmp = comp(element, node->value)) != 0) {
+    while (node && (cmp = comp(element, node->value)) != 0) {
         if (cmp < 0) {
             succ = node;
             node = node->left;
@@ -194,6 +194,9 @@ static node_t *_successor(node_t *node, void *element, comp_fn_t comp) {
             node = node->right;
         }
     }
+
+    if (!node)
+        return NULL;
 
     if (node->right)
         return _min(node->right); // The child node successor.
@@ -211,7 +214,7 @@ static node_t *_predecessor(node_t *node, void *element, comp_fn_t comp) {
     node_t *pred = NULL; // The parent predecessor.
 
     int cmp;
-    while ((cmp = comp(element, node->value)) != 0) {
+    while (node && (cmp = comp(element, node->value)) != 0) {
         if (cmp > 0) {
             pred = node;
             node = node->right;
@@ -219,6 +222,9 @@ static node_t *_predecessor(node_t *node, void *element, comp_fn_t comp) {
             node = node->left;
         }
     }
+
+    if (!node)
+        return NULL;
 
     if (node->left)
         return _max(node->left);
