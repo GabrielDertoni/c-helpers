@@ -25,6 +25,14 @@
     } \
 })
 
+#define assert_le(a, b) ({ \
+    CHECKPOINT; \
+    if (a >= b) { \
+        fprintf(stderr, YELLOW "Expected " #a " to be smaller then " #b ". (%s:%d)" RESET "\n", __FILE__, __LINE__); \
+        return false; \
+    } \
+})
+
 #define test_fn(func) ({ \
     CHECKPOINT; \
     if (!func) { \
@@ -43,6 +51,8 @@
 
 #define TEST_SETUP() ({ CHECKPOINT; test_setup(); })
 #define TEST_TEARDOWN() ({ CHECKPOINT; test_teardown(); })
+
+#define UNIMPLEMENTED() ({ printf(YELLOW "Missing implementation on (%s:%d)" RESET "\n", __FILE__, __LINE__); return true; })
 
 static int last_line = 0;
 static char *last_fname = NULL;

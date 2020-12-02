@@ -36,9 +36,9 @@ $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(HDR)
 
 # Unit testing
-# $(TEST_BIN)/%_test: CFLAGS := $(CFLAGS) $(TESTFLAGS)
+$(TEST_BIN)/%_test: CFLAGS := $(CFLAGS) $(TESTFLAGS)
 $(TEST_BIN)/%_test: $(TEST)/%_test.c $(filter-out $(OBJ)/main.o, $(OBJS))
-	$(CC) $(CFLAGS) $^ -o $@ -I $(HDR)
+	$(CC) $(CFLAGS) $(TESTFLAGS) $^ -o $@ -I $(HDR)
 
 test: $(TESTS)
 	@echo $(TESTS) | xargs -n 1 sh -c
