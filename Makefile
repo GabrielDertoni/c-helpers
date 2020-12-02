@@ -1,61 +1,56 @@
-BIN=main
+# Compilation
+CC := gcc
+CFLAGS := -Wall -Werror
+TESTFLAGS := -g -DDEBUG
 
-CC=gcc
-CFLAGS=-Wall -Werror
-HDR=includes
-SRC=src
-OBJ=obj
+# Directories
+BIN := bin
+PROG := progs
+HDR := includes
+SRC := src
+OBJ := obj
+TEST := tests
 
-SRCS=$(wildcard $(SRC)/*.c)
-HDRS=$(wildcard $(HDR)/*.h)
-OBJS=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
+# Derived directories
+PROG_BIN := $(BIN)/$(PROG)
+TEST_BIN := $(BIN)/$(TEST)
 
-TEST=tests
-TEST_BIN=bin/tests
-TESTFLAGS=-g -DDEBUG
-TEST_SRCS=$(wildcard $(TEST)/*.c)
-TESTS=$(patsubst $(TEST)/%.c, $(TEST_BIN)/%, $(TEST_SRCS))
+SRCS := $(wildcard $(SRC)/*.c)
+HDRS := $(wildcard $(HDR)/*.h)
+OBJS := $(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
+PROG_SRCS := $(wildcard $(PROG)/*.c)
+PROGS := $(patsubst $(PROG)/%.c, $(PROG_BIN)/%, $(PROG_SRCS))
+TEST_SRCS := $(wildcard $(TEST)/*.c)
+TESTS := $(patsubst $(TEST)/%.c, $(TEST_BIN)/%, $(TEST_SRCS))
 
-all: $(BIN)
+BUILD_DIR := $(shell mkdir -p $(OBJ) $(PROG_BIN) $(TEST_BIN))
 
-# Linking all .o
-$(BIN): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $(BIN)
+all: $(PROGS)
 
-# Runs binary
-run:
-	./$(BIN)
+# Building programs
+$(PROG_BIN)/%: $(PROG)/%.c $(OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ -I $(HDR)
 
 # Compiling to .o
-$(OBJ)/%.o: $(SRC)/%.c $(OBJ)
+$(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(HDR)
 
-# UNIT testing
-$(TEST_BIN)/%_test: $(SRC)/%.c $(TEST)/%_test.c
-	$(CC) $(CFLAGS) $(TESTFLAGS) $^ -o $@ -I $(HDR)
+# Unit testing
+# $(TEST_BIN)/%_test: CFLAGS := $(CFLAGS) $(TESTFLAGS)
+$(TEST_BIN)/%_test: $(TEST)/%_test.c $(filter-out $(OBJ)/main.o, $(OBJS))
+	$(CC) $(CFLAGS) $^ -o $@ -I $(HDR)
 
 test: $(TESTS)
-	echo $(TESTS) | xargs -n 1 sh -c
+	@echo $(TESTS) | xargs -n 1 sh -c
 
-zip:
-	zip -r Envio.zip $(SRC) $(HDR) Makefile
+atest: $(TEST_BIN)/$(T)_test
+	$(TEST_BIN)/$(T)_test
 
-# Simulates runcodes environment.
-runcodes: $(BIN)
-	find . -regex ".*\.in" | \
-	parallel "cat {} | \
-		  ./$(BIN) | \
-		  diff --color=always -u -Z --label GOT --label \"EXPECTED ({/})\" - {.}.out" && \
-	echo "\033\033[1;32mTudo certo!\033[0m" || \
-	echo "\033\033[1;31mAlguns erros... Verifique acima.\033[0m"
-
-# Creates a new directory for all .o
-$(OBJ):
-	mkdir -p $(OBJ)
+echo: $(filter-out $(OBJ)/main.o, $(OBJS))
+	@echo $^
 
 # Cleaning.
 clean:
-	rm $(TESTS)
-	rm $(OBJ)/*
-	rmdir $(OBJ)
-	rm $(BIN)
+	rm -rf $(OBJ)
+	rm -rf $(BIN)
+

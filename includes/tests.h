@@ -13,7 +13,7 @@
     testFn; \
 })
 
-#define TEST_SETUP() printf(BLUE "=============== TEST: %s ===============" RESET "\n", __FILE__)
+#define TEST_SETUP() printf("\n" BLUE "=============== TEST: %s ===============" RESET "\n", __FILE__)
 #define TEST_TEARDOWN() printf(GREEN "%s: ALL TESTS PASSED!" RESET "\n", __FILE__)
 
 #endif

@@ -7,10 +7,18 @@
 #include <skip_list.h>
 
 #define WITH_SKIP_LIST(func) ({ \
-    skip_list_t *__list = skip_list_create(5, compare); \
+    skip_list_t *__list = skip_list_create(compare, strdup(""), 5); \
     func(__list); \
     skip_list_destroy(__list, heap_free); \
 })
+
+int compare(char *a, char *b) {
+    return strcmp(a, b);
+}
+
+void heap_free(char *str) {
+    free(str);
+}
 
 void empty_list(skip_list_t *l) {
     assert(skip_list_size(l) == 0);
@@ -19,6 +27,11 @@ void empty_list(skip_list_t *l) {
 void insert_elem(skip_list_t *l) {
     skip_list_insert(l, strdup("Hello world"));
     assert(skip_list_size(l) == 1);
+}
+
+void insert_fail(skip_list_t *l) {
+    assert(skip_list_insert(l, strdup("Some string")));
+    assert(!skip_list_insert(l, strdup("Some string")));
 }
 
 void remove_elem(skip_list_t *l) {
@@ -76,6 +89,7 @@ int main() {
 
     NAMED_TEST("empty_list"                     , WITH_SKIP_LIST(empty_list));
     NAMED_TEST("insert_elem"                    , WITH_SKIP_LIST(insert_elem));
+    NAMED_TEST("insert_and_fail"                , WITH_SKIP_LIST(insert_fail));
     NAMED_TEST("remove_elem"                    , WITH_SKIP_LIST(remove_elem));
     NAMED_TEST("insert_remove_elem"             , WITH_SKIP_LIST(insert_remove_elem));
     NAMED_TEST("search_and_fail"                , WITH_SKIP_LIST(search_and_fail));

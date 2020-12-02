@@ -14,10 +14,9 @@
 #define __STACK_H__
 
 #include <stdbool.h>
-#include <helpers.h>
 
-typedef void (*free_fn_t)(elem_t);
 typedef void *elem_t;
+typedef void (*free_fn_t)(elem_t);
 
 typedef struct _stack stack_t;
 

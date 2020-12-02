@@ -23,11 +23,10 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
-#include <dict_type.h>
 
 // The general element type. This may be changed and recompiled to whichever type
 // is appropriate.
-typedef dict_entry_t * elem_t;
+typedef char * elem_t;
 
 // The type used to reference a node in the skip list.
 typedef struct _skip_node skip_node_t;
@@ -51,6 +50,7 @@ typedef int (*comp_fn_t)(elem_t, elem_t);
  * Creates a new skip list.
  *
  * @param layer_max - the maximum number of layers that the skip list can have. [ownership]
+ * @param elem_min - the smallest possible element. [ownership]
  * @param comp_fn_t - the comparison function between two elements. [ref]
  * @return the newly created (allocated) skip list. [ownership]
  */
@@ -118,6 +118,7 @@ skip_node_t *skip_list_find_with(skip_list_t *l, elem_t elem, comp_fn_t comp);
  *
  * @param l - the skip list. [mut ref]
  * @param elem - the element to be inserted. [ownership]
+ * @return true if the insertion is successfully (not duplicate). False otherwise.
  */
 bool skip_list_insert(skip_list_t *l, elem_t elem);
 

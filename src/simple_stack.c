@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
-#include <helpers.h>
 #include <simple_stack.h>
 
 // Macro para alocação de memória

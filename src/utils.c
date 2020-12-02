@@ -1,6 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <utils.h>
+
+void *maybeRealloc(void *ptr, const size_t used, size_t *alloc) {
+    if (*alloc == 0)
+        return realloc(ptr, *alloc = CHUNK);
+
+    if (used >= *alloc)
+        return realloc(ptr, *alloc *= 2);
+
+    if (used < *alloc / 2 && *alloc > CHUNK)
+        return realloc(ptr, *alloc /= 2);
+    
+    return ptr;
+}
 
 char *readline(FILE *fp) {
     char *str = NULL;

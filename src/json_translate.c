@@ -1,6 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <generic.h>
 #include <json.h>
+#include <json_translate.h>
+
+#define OK PARSER_SUCCESS
+#define FAIL PARSER_FAIL
 
 #define ASSERT_OK(result) if ((result) != OK) return FAIL
 #define ASSERT(value) if (!(value)) return FAIL
