@@ -46,9 +46,6 @@ test: $(TESTS)
 atest: $(TEST_BIN)/$(T)_test
 	$(TEST_BIN)/$(T)_test
 
-echo: $(filter-out $(OBJ)/main.o, $(OBJS))
-	@echo $^
-
 # Cleaning.
 clean:
 	rm -rf $(OBJ)
