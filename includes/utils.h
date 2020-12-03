@@ -8,6 +8,8 @@
 
 // Garante que ptr terá um espaço a mais alocado que used
 void *maybeRealloc(void *ptr, const size_t used, size_t *alloc);
+
+// Lê uma linha de um arquivo.
 char *readline(FILE *fp);
 
 #endif

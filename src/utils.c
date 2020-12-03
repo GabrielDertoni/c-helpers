@@ -10,7 +10,7 @@ void *maybeRealloc(void *ptr, const size_t used, size_t *alloc) {
     if (used >= *alloc)
         return realloc(ptr, *alloc *= 2);
 
-    if (used < *alloc / 2 && *alloc > CHUNK)
+    if (used < *alloc / 4 && *alloc > CHUNK)
         return realloc(ptr, *alloc /= 2);
     
     return ptr;
@@ -22,10 +22,7 @@ char *readline(FILE *fp) {
     size_t alloc;
     while (strchr("\r\n", c = getc(fp)) && !feof(fp));
     for (i = 0, alloc = 0; !strchr("\r\n", c) && !feof(fp); i++, c = getc(fp)) {
-        if ((i + 1) * sizeof(char) >= alloc) {
-            if ((alloc *= 2) == 0) alloc = 32 * sizeof(char);
-            str = (char *)realloc((void *)str, alloc);
-        }
+        str = maybeRealloc(str, (i + 1) * sizeof(char), &alloc);
         str[i] = c;
     }
 

@@ -18,10 +18,14 @@ int int_compare(void *a, void *b) {
 
 void do_nothing(void *_) {}
 
-static int global_index;
-void store(void *element, void *arg) {
-    int *arr = (int *)arg;
-    arr[global_index++] = *(int *)element;
+struct store_args {
+    int index;
+    int *arr;
+};
+
+void store(void *element, void *store_args) {
+    struct store_args *args = (struct store_args *)store_args;
+    args->arr[args->index++] = *(int *)element;
 }
 
 bool test_llrb_postorder_foreach() {
@@ -40,10 +44,13 @@ bool test_llrb_inorder_foreach() {
         assert_eq(llrb_insert(tree, &i), true);
 
     int in_order[50];
-    global_index = 0;
-    llrb_inorder_foreach(tree, store, in_order);
+    struct store_args args = {
+        .index = 0,
+        .arr = in_order,
+    };
+    llrb_inorder_foreach(tree, store, &args);
 
-    assert_eq(global_index, 50);
+    assert_eq(args.index, 50);
     for (int i = 0; i < 49; i++)
         assert_le(in_order[i], in_order[i + 1]);
     

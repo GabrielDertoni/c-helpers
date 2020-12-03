@@ -25,20 +25,26 @@ TESTS := $(patsubst $(TEST)/%.c, $(TEST_BIN)/%, $(TEST_SRCS))
 
 BUILD_DIR := $(shell mkdir -p $(OBJ) $(PROG_BIN) $(TEST_BIN))
 
+# Prevents make from removing .o files after use.
+.SECONDARY:
+
 all: $(PROGS)
 
 # Building programs
 $(PROG_BIN)/%: $(PROG)/%.c $(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@ -I $(HDR)
+	@echo "Compiling and linking $<"
+	@$(CC) $(CFLAGS) $^ -o $@ -I $(HDR)
 
 # Compiling to .o
 $(OBJ)/%.o: $(SRC)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@ -I $(HDR)
+	@echo "Compiling $<"
+	@$(CC) $(CFLAGS) -c $< -o $@ -I $(HDR)
 
 # Unit testing
-$(TEST_BIN)/%_test: CFLAGS := $(CFLAGS) $(TESTFLAGS)
+$(TEST_BIN)/%_test: CFLAGS += $(TESTFLAGS)
 $(TEST_BIN)/%_test: $(TEST)/%_test.c $(filter-out $(OBJ)/main.o, $(OBJS))
-	$(CC) $(CFLAGS) $(TESTFLAGS) $^ -o $@ -I $(HDR)
+	@echo "Compiling and linking $<"
+	@$(CC) $(CFLAGS) $(TESTFLAGS) $^ -o $@ -I $(HDR)
 
 test: $(TESTS)
 	@echo $(TESTS) | xargs -n 1 sh -c
