@@ -28,7 +28,15 @@
 #define assert_le(a, b) ({ \
     CHECKPOINT; \
     if (a >= b) { \
-        fprintf(stderr, YELLOW "Expected " #a " to be smaller then " #b ". (%s:%d)" RESET "\n", __FILE__, __LINE__); \
+        fprintf(stderr, YELLOW "Expected " #a " to be less then " #b ". (%s:%d)" RESET "\n", __FILE__, __LINE__); \
+        return false; \
+    } \
+})
+
+#define assert_leq(a, b) ({ \
+    CHECKPOINT; \
+    if (a > b) { \
+        fprintf(stderr, YELLOW "Expected " #a " to be less then or equal to " #b ". (%s:%d)" RESET "\n", __FILE__, __LINE__); \
         return false; \
     } \
 })
