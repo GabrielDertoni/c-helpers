@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <signal.h>
 #include <unistd.h>
 #include <colors.h>
@@ -41,6 +42,22 @@
     } \
 })
 
+#define assert_ge(a, b) ({ \
+    CHECKPOINT; \
+    if (a <= b) { \
+        fprintf(stderr, YELLOW "Expected " #a " to be greater then " #b ". (%s:%d)" RESET "\n", __FILE__, __LINE__); \
+        return false; \
+    } \
+})
+
+#define assert_geq(a, b) ({ \
+    CHECKPOINT; \
+    if (a < b) { \
+        fprintf(stderr, YELLOW "Expected " #a " to be greater then or equal to " #b ". (%s:%d)" RESET "\n", __FILE__, __LINE__); \
+        return false; \
+    } \
+})
+
 #define test_fn(func) ({ \
     CHECKPOINT; \
     if (!func) { \
@@ -61,6 +78,14 @@
 #define TEST_TEARDOWN() ({ CHECKPOINT; test_teardown(); })
 
 #define UNIMPLEMENTED() ({ printf(YELLOW "Missing implementation on (%s:%d)" RESET "\n", __FILE__, __LINE__); return true; })
+
+#define PRINT_VEC(vec, n, flag) ({ \
+    __typeof__ (n) __n = (n); \
+    if (__n == 0) printf("["); \
+    else printf("[ " flag, vec[0]); \
+    for (int __i = 1; __i < __n; __i++) printf(", " flag, vec[__i]); \
+    printf(" ]\n"); \
+})
 
 static int last_line = 0;
 static char *last_fname = NULL;
